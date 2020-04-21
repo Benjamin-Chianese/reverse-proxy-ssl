@@ -2,6 +2,8 @@
 echo -e '\033[36;1;4mLancer :\033[0m'
 echo '1) Installer les logiciels'
 echo '2) Ajouts Reverse Proxy + SSL/TLS'
+echo '3) Suppression Reverse Proxy + SSL/TLS'
+
 
 read -p 'Choix : ' choix
 
@@ -53,15 +55,12 @@ read -p 'Adresse Ip (LAN) : ' ip
 read -p 'Port (443) : ' port
 read -p 'Domaine : (plop.domain.com) : ' domaine
 read -p 'Mail : ' mail
-
 echo ""
 
 echo -e "\033[31m## Creation fichier $app ##\033[0m"
-echo ""
 if [ -f /etc/nginx/sites-enabled/"$app".conf ]
 then 
 sudo rm /etc/nginx/sites-enabled/"$app".conf
-sudo rm /etc/nginx/sites-available/"$app".conf
 fi
 
 sudo touch /etc/nginx/sites-available/"$app".conf
@@ -91,7 +90,6 @@ sudo certbot certonly --webroot -w /var/www/letsencrypt --agree-tos --no-eff-ema
 
 echo ""
 sudo rm /etc/nginx/sites-enabled/"$app".conf
-sudo rm /etc/nginx/sites-available/"$app".conf
 
 echo -e "\033[31m## Modification fichier $app ##\033[0m"
 echo ""
@@ -140,8 +138,22 @@ sudo ln -s /etc/nginx/sites-available/"$app".conf /etc/nginx/sites-enabled/"$app
 
 echo ""
 echo -e "\033[31m## Redemarrage Nginx ##\033[0m"
-echo ""
 sudo systemctl reload nginx.service
 fi 
 
+if [ $choix == 3 ]
+then
 
+read -p 'Nom Application (Sonarr) : ' app
+read -p 'Domaine : (plop.domain.com) : ' domaine
+echo ""
+
+
+echo -e "\033[31m## Suppression fichier $app ##\033[0m"
+sudo rm /etc/nginx/sites-enabled/"$app".conf
+sudo rm -R /etc/letsencrypt/live/$domaine
+
+echo ""
+echo -e "\033[31m## Redemarrage Nginx ##\033[0m"
+sudo systemctl reload nginx.service
+fi
