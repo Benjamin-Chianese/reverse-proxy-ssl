@@ -50,7 +50,7 @@ fi
 if [ $choix == 2 ]
 then
 
-read -p 'Nom Application (Sonarr) : ' app
+read -p 'Nom Application (sonarr) : ' app
 read -p 'Adresse Ip (LAN) : ' ip
 read -p 'Port (443) : ' port
 read -p 'Domaine : (plop.domain.com) : ' domaine
@@ -144,7 +144,7 @@ fi
 if [ $choix == 3 ]
 then
 
-read -p 'Nom Application (Sonarr) : ' app
+read -p 'Nom Application (sonarr) : ' app
 read -p 'Domaine : (plop.domain.com) : ' domaine
 echo ""
 
