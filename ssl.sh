@@ -13,26 +13,18 @@ then
 echo -e "\033[31m## Mise à jour ##\033[0m" 
 sudo apt update
 sudo apt upgrade -y
-echo -e "\033[31m## Fin mise à jour ##\033[0m"
-
 echo ""
 
 echo -e "\033[31m## Installation Nginx ##\033[0m" 
 sudo apt install nginx -y
-echo -e "\033[31m## Fin installation Nginx ##\033[0m"
-
 echo ""
 
 echo -e "\033[31m## Installation Certbot ##\033[0m" 
 sudo apt install certbot -y
-echo -e "\033[31m## Fin installation Certbot ##\033[0m"
-
 echo ""
 
 echo -e "\033[31m## Creation dossier letsencrypt ##\033[0m" 
 sudo mkdir -p /var/www/letsencrypt
-echo -e "\033[31m## Dossier créer ##\033[0m"
-
 echo ""
 
 echo -e "\033[31m## Creation fichier letsencrypt ##\033[0m" 
@@ -41,11 +33,13 @@ echo "location ^~ /.well-known/acme-challenge/ {" >> /etc/nginx/snippets/letsenc
 echo 'default_type "text/plain";' >> /etc/nginx/snippets/letsencrypt
 echo "root         /var/www/letsencrypt;" >> /etc/nginx/snippets/letsencrypt
 echo "}" >> /etc/nginx/snippets/letsencrypt
-echo -e "\033[31m## Fichier créer ##\033[0m"
-
-echo "42 23 * * 1 /usr/bin/certbot renew >> /var/log/le-renew.log" >> /etc/crontab 
-
 echo ""
+
+echo -e "\033[31m## Mise en place du cron de renouvellement ##\033[0m"
+echo "42 23 * * 1 /usr/bin/certbot renew >> /var/log/le-renew.log" >> /etc/crontab 
+echo ""
+
+echo -e "\033[31m## Génération cert ssl ##\033[0m"
 sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 sudo chmod 600 /etc/ssl/certs/dhparam.pem
 ###if choix ###        
@@ -63,7 +57,6 @@ read -p 'Mail : ' mail
 echo ""
 
 echo -e "\033[31m## Creation fichier $app ##\033[0m"
-echo ""
 echo ""
 if [ -f /etc/nginx/sites-enabled/"$app".conf ]
 then 
@@ -84,17 +77,15 @@ echo "      include        /etc/nginx/snippets/letsencrypt;" >> /etc/nginx/sites
 echo "" >> /etc/nginx/sites-available/"$app".conf
 echo "}" >> /etc/nginx/sites-available/"$app".conf 
 
+echo -e "\033[31m## Mise en service temporaire en HTTP ##\033[0m"
 sudo ln -s /etc/nginx/sites-available/"$app".conf /etc/nginx/sites-enabled/"$app".conf
-
 echo ""
 
-echo "Redemarrage nginx"
-echo ""
+echo -e "\033[31m## Redemarrage Nginx ##\033[0m"
 sudo systemctl reload nginx.service
-
 echo ""
 
-echo "Generation certif"
+echo -e "\033[31m## Creation cert $domaine ##\033[0m"
 echo ""
 sudo certbot certonly --webroot -w /var/www/letsencrypt --agree-tos --no-eff-email --email "$mail" -d "$domaine" --rsa-key-size 4096
 
@@ -148,8 +139,7 @@ echo "}" >> /etc/nginx/sites-available/"$app".conf
 sudo ln -s /etc/nginx/sites-available/"$app".conf /etc/nginx/sites-enabled/"$app".conf
 
 echo ""
-
-echo "Redemarrage nginx"
+echo -e "\033[31m## Redemarrage Nginx ##\033[0m"
 echo ""
 sudo systemctl reload nginx.service
 fi 
