@@ -27,6 +27,7 @@ echo ""
 
 echo -e "\033[31m## Creation dossier letsencrypt ##\033[0m" 
 sudo mkdir -p /var/www/letsencrypt
+sudo chmod 0755 /etc/letsencrypt/
 echo ""
 
 echo -e "\033[31m## Creation fichier letsencrypt ##\033[0m" 
